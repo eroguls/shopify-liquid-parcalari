@@ -1,0 +1,39 @@
+{%- comment -%}
+  Bilgi bandı: başlık + metin blokları + uygulama blokları (@app). Online Store 2.0 bölümünün en
+  küçük çalışan örneği; şemadaki presets sayesinde tema düzenleyicide "Bölüm ekle" listesinde
+  görünür.
+{%- endcomment -%}
+<div class="bilgi-bandi">
+  {%- if section.settings.heading != blank -%}
+    <h2>{{ section.settings.heading | escape }}</h2>
+  {%- endif -%}
+
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when '@app' -%}
+        {% render block %}
+      {%- when 'text' -%}
+        <div {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+    {%- endcase -%}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Bilgi bandı",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Başlık" }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "text",
+      "name": "Metin",
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Metin" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Bilgi bandı" }]
+}
+{% endschema %}

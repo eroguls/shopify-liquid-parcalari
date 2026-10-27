@@ -1,0 +1,35 @@
+{% doc %}
+  Ürün görselleri: ilk görsel hemen ve öncelikli (LCP), diğerleri tembel yüklenir. image_tag
+  genişlik/yükseklik ve srcset’i kendisi ekler; sizes değerini görselin sayfada kapladığı alana
+  göre düzenleyin.
+
+  @param {product} product - Görselleri gösterilecek ürün
+
+  @example
+  {% render 'urun-gorselleri', product: product %}
+{% enddoc %}
+
+{%- comment -%} İlk ekrandaki ürün görseli: hemen ve öncelikli yüklenir. {%- endcomment -%}
+{%- if product.featured_image -%}
+  {{
+    product.featured_image
+    | image_url: width: 1600
+    | image_tag:
+      widths: '400, 800, 1200, 1600',
+      sizes: '(min-width: 990px) 50vw, 100vw',
+      loading: 'eager',
+      fetchpriority: 'high'
+  }}
+{%- endif -%}
+
+{%- comment -%} Aşağıdaki görseller: ziyaretçi yaklaşınca yüklenir. {%- endcomment -%}
+{%- for image in product.images offset: 1 -%}
+  {{
+    image
+    | image_url: width: 1200
+    | image_tag:
+      widths: '400, 800, 1200',
+      sizes: '(min-width: 990px) 25vw, 50vw',
+      loading: 'lazy'
+  }}
+{%- endfor -%}

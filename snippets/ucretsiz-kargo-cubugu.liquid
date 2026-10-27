@@ -1,0 +1,28 @@
+{% doc %}
+  Sepette ücretsiz kargo eşiğine kalan tutarı ve ilerleme çubuğunu gösterir.
+
+  Eşik, mağazanın ana para biriminde tam sayı olarak verilir (ör. 1500). Tek para birimli
+  mağazalar içindir: Liquid’de kur bilgisi olmadığından farklı para biriminde gezen ziyaretçide
+  eşik dönüştürülmez. Sepet AJAX ile güncelleniyorsa bu parçayı içeren bölümü Section Rendering
+  API ile yeniden çizdirin.
+
+  @param {number} esik - Ücretsiz kargo eşiği, ana para biriminde (ör. 1500)
+
+  @example
+  {% render 'ucretsiz-kargo-cubugu', esik: 1500 %}
+{% enddoc %}
+
+{%- assign esik_kurus = esik | times: 100 -%}
+{%- assign kalan = esik_kurus | minus: cart.total_price -%}
+
+<div class="kargo-cubugu" role="status">
+  {%- if kalan > 0 -%}
+    {%- assign yuzde = cart.total_price | times: 100 | divided_by: esik_kurus -%}
+    <p>Ücretsiz kargo için <strong>{{ kalan | money }}</strong> daha ekleyin.</p>
+    <progress max="100" value="{{ yuzde }}" aria-label="Ücretsiz kargo eşiğine ilerleme">
+      %{{ yuzde }}
+    </progress>
+  {%- else -%}
+    <p>Siparişiniz ücretsiz kargoya uygun.</p>
+  {%- endif -%}
+</div>

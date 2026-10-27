@@ -1,0 +1,29 @@
+{% doc %}
+  Ürün meta alanlarından malzeme ve beden tablosu bilgisini gösterir. Alan boşsa blok başlığıyla
+  birlikte hiç yazılmaz.
+
+  Gerekenler: custom.malzeme (tek satır metin) ürün meta alanı ve custom.beden_tablosu
+  (baslik, aciklama alanlı bir metaobject’e referans) ürün meta alanı.
+
+  @param {product} product - Bilgileri gösterilecek ürün
+
+  @example
+  {% render 'urun-bilgileri', product: product %}
+{% enddoc %}
+
+{%- assign malzeme = product.metafields.custom.malzeme -%}
+{%- assign beden_tablosu = product.metafields.custom.beden_tablosu.value -%}
+
+{%- if malzeme != blank -%}
+  <div class="urun-bilgi">
+    <h3>Malzeme</h3>
+    <p>{{ malzeme.value | escape }}</p>
+  </div>
+{%- endif -%}
+
+{%- if beden_tablosu != blank -%}
+  <div class="urun-bilgi">
+    <h3>{{ beden_tablosu.baslik.value | escape }}</h3>
+    <p>{{ beden_tablosu.aciklama.value | escape | newline_to_br }}</p>
+  </div>
+{%- endif -%}

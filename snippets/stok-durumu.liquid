@@ -1,0 +1,23 @@
+{% doc %}
+  Stok durumu metni. Stok Shopify ile takip ediliyorsa az kalan ürünlerde adedi gösterir; stok
+  bittiğinde satışa devam ediliyorsa "ön sipariş" yazar. Stok takibi kapalı varyantlarda ve bol
+  stokta hiçbir şey yazmaz.
+
+  @param {variant} variant - Durumu gösterilecek varyant
+  @param {number} [esik] - Bu adet ve altında "son N ürün" yazar (varsayılan 5)
+
+  @example
+  {% render 'stok-durumu', variant: product.selected_or_first_available_variant, esik: 3 %}
+{% enddoc %}
+
+{%- assign esik = esik | default: 5 -%}
+
+{%- if variant.inventory_management == 'shopify' -%}
+  {%- if variant.inventory_quantity > 0 and variant.inventory_quantity <= esik -%}
+    <p class="stok-durumu stok-durumu--az">Son {{ variant.inventory_quantity }} ürün</p>
+  {%- elsif variant.inventory_quantity <= 0 and variant.inventory_policy == 'continue' -%}
+    <p class="stok-durumu stok-durumu--on-siparis">Ön sipariş: stoğa girince gönderilir</p>
+  {%- elsif variant.available == false -%}
+    <p class="stok-durumu stok-durumu--yok">Tükendi</p>
+  {%- endif -%}
+{%- endif -%}

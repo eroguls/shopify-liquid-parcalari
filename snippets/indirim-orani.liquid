@@ -1,0 +1,15 @@
+{% doc %}
+  Varyantın indirim oranını rozet olarak gösterir: "%20 indirim". Üstü çizili fiyat yoksa ya da
+  satış fiyatından büyük değilse hiçbir şey yazmaz. Oran en yakın tam sayıya yuvarlanır.
+
+  @param {variant} variant - Oranı hesaplanacak varyant
+
+  @example
+  {% render 'indirim-orani', variant: product.selected_or_first_available_variant %}
+{% enddoc %}
+
+{%- if variant.compare_at_price > variant.price -%}
+  {%- assign indirim = variant.compare_at_price | minus: variant.price -%}
+  {%- assign oran = indirim | times: 100.0 | divided_by: variant.compare_at_price | round -%}
+  <span class="indirim-orani">%{{ oran }} indirim</span>
+{%- endif -%}
